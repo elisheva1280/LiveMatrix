@@ -1,0 +1,20 @@
+# CMake outputs
+/out/
+/build/
+/CMakePresets.json.user
+
+# Visual Studio temporary files
+.vs/
+*.user
+*.sln
+*.vcxproj
+*.filters
+
+# GStreamer/Binaries (Never upload DLLs or EXEs)
+*.exe
+*.dll
+*.pdb
+
+# Qt generated files
+*.qmlc
+*.jsc
