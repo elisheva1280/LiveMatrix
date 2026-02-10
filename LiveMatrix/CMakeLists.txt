@@ -51,3 +51,15 @@ if(MSVC)
     target_compile_options(LiveMatrix PRIVATE /W4 /permissive-)
 endif()
 
+# Remove duplicate FFmpeg DLLs that may be copied from GStreamer; keep vcpkg versions (62/60/11/6/9)
+add_custom_command(TARGET LiveMatrix POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E remove -f
+        "$<TARGET_FILE_DIR:LiveMatrix>/avcodec-61.dll"
+        "$<TARGET_FILE_DIR:LiveMatrix>/avformat-61.dll"
+        "$<TARGET_FILE_DIR:LiveMatrix>/avutil-59.dll"
+        "$<TARGET_FILE_DIR:LiveMatrix>/avfilter-10.dll"
+        "$<TARGET_FILE_DIR:LiveMatrix>/swresample-5.dll"
+        "$<TARGET_FILE_DIR:LiveMatrix>/swscale-8.dll"
+    COMMENT "Remove duplicate FFmpeg DLLs (keep vcpkg versions)"
+)
+

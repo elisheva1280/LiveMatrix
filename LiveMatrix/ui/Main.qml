@@ -94,8 +94,12 @@ Window {
                     id: videoOutput
                     anchors.fill: parent
                     anchors.margins: 4
-                    videoSink: streamController ? streamController.videoSink : null
                     fillMode: VideoOutput.PreserveAspectFit
+                    Component.onCompleted: {
+                        if (streamController && videoOutput.videoSink) {
+                            streamController.setVideoSink(videoOutput.videoSink)
+                        }
+                    }
                 }
             }
         }

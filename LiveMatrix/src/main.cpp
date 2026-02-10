@@ -1,3 +1,13 @@
+#include <iostream>
+#include <cstdlib>
+#include <cstdio>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+#include <QCoreApplication>
+#include <QDir>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -8,22 +18,58 @@
 
 #include "StreamController.hpp"
 
+static void log(const char* msg)
+{
+    std::cout << msg << std::endl;
+    std::cout.flush();
+}
+
+/// Attach to parent console (when run from cmd/PowerShell) so stdout/stderr are visible.
+static void attachConsoleIfNeeded()
+{
+#ifdef _WIN32
+
+    _putenv_s("GST_PLUGIN_PATH", "C:\\Program Files\\gstreamer\\1.0\\msvc_x86_64\\lib\\gstreamer-1.0");
+
+    if (AttachConsole(ATTACH_PARENT_PROCESS))
+    {
+        FILE* dummy = nullptr;
+        (void)freopen_s(&dummy, "CONOUT$", "w", stdout);
+        (void)freopen_s(&dummy, "CONOUT$", "w", stderr);
+        (void)freopen_s(&dummy, "CONIN$", "r", stdin);
+    }
+#endif
+}
+
 int main(int argc, char* argv[])
 {
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication app(argc, argv);
+    attachConsoleIfNeeded();
+    log("[LiveMatrix] Application start (entry point).");
 
-    qDebug() << "LiveMatrix: starting, initializing GStreamer...";
+    log("[LiveMatrix] Setting High DPI attribute...");
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+    log("[LiveMatrix] Creating QGuiApplication...");
+    QGuiApplication app(argc, argv);
+    log("[LiveMatrix] QGuiApplication created.");
+
+    log("[LiveMatrix] Initializing GStreamer...");
     int gstArgc = 0;
     char** gstArgv = nullptr;
     gst_init(&gstArgc, &gstArgv);
+    log("[LiveMatrix] GStreamer initialized.");
 
+    log("[LiveMatrix] Creating QML engine and controller...");
     QQmlApplicationEngine engine;
+    // Ensure QML imports are found when running from build/Release (e.g. qml/QtQuick, qml/QtMultimedia)
+    const QString qmlImportPath = QDir::cleanPath(QCoreApplication::applicationDirPath() + QStringLiteral("/qml"));
+    engine.addImportPath(qmlImportPath);
+    qDebug() << "[LiveMatrix] QML import path added:" << qmlImportPath;
 
     StreamController controller;
     engine.rootContext()->setContextProperty(QStringLiteral("streamController"), &controller);
 
-    const QUrl url(QStringLiteral("qrc:/LiveMatrixQml/Main.qml"));
+    const QUrl url(QStringLiteral("qrc:/LiveMatrixQml/ui/Main.qml"));
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreated,
@@ -42,7 +88,9 @@ int main(int argc, char* argv[])
         },
         Qt::QueuedConnection);
 
+    log("[LiveMatrix] Loading QML...");
     engine.load(url);
+    log("[LiveMatrix] QML load returned.");
 
     if (engine.rootObjects().isEmpty())
     {
@@ -50,6 +98,6 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    qDebug() << "LiveMatrix: entering event loop.";
+    log("[LiveMatrix] Entering event loop.");
     return app.exec();
 }
