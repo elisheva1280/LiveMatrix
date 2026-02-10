@@ -1,15 +1,29 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
-#
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required(VERSION 3.21)
 
-# Enable Hot Reload for MSVC compilers if supported.
-if (POLICY CMP0141)
-  cmake_policy(SET CMP0141 NEW)
-  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
+project(LiveMatrix LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+if(NOT WIN32)
+    message(FATAL_ERROR "This project is intended for Windows/MSVC only.")
 endif()
 
-project ("LiveMatrix")
+find_package(Qt6 6.6 REQUIRED COMPONENTS Quick Qml Multimedia)
 
-# Include sub-projects.
-add_subdirectory ("LiveMatrix")
+qt_standard_project_setup()
+
+# GStreamer 1.22+ via pkg-config (typical Windows SDK install)
+
+set(Qt6QmlTools_FOUND TRUE CACHE BOOL "Faking Qt6QmlTools")
+set(Qt6QuickTools_FOUND TRUE CACHE BOOL "Faking Qt6QuickTools")
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GSTREAMER REQUIRED IMPORTED_TARGET
+    gstreamer-1.0
+    gstreamer-video-1.0
+    gstreamer-app-1.0
+)
+
+add_subdirectory(LiveMatrix)
