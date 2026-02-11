@@ -3,6 +3,7 @@
 /build/
 /CMakePresets.json.user
 
+/docs/
 # Visual Studio temporary files
 .vs/
 *.user
