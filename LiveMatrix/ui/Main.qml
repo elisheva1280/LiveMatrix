@@ -2,109 +2,108 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Window 2.15
-import QtMultimedia 6.6
+import QtMultimedia 6.0 
 import QtQuick.Controls.Material 2.15
-
 
 Window {
     id: root
-    width: 960
-    height: 540
+    width: 1024
+    height: 640
     visible: true
-    title: qsTr("RTSP Viewer (MVP)")
+    title: qsTr("LiveMatrix RTSP Professional")
 
     Material.theme: Material.Dark
     Material.accent: Material.Teal
 
-    color: "#202020"
+    Rectangle {
+        anchors.fill: parent
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "#1a1a1a" }
+            GradientStop { position: 1.0; color: "#0d0d0d" }
+        }
+    }
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 12
-        spacing: 8
+        spacing: 0
 
-        RowLayout {
+        // שימוש ב-Pane במקום Rectangle כדי לתמוך ב-elevation (צל)
+        Pane {
             Layout.fillWidth: true
-            spacing: 8
+            Layout.preferredHeight: 64
+            Material.elevation: 4
+            padding: 0
+            
+            background: Rectangle { color: "#252525" }
 
-            TextField {
-                id: urlField
-                Layout.fillWidth: true
-                placeholderText: qsTr("rtsp://user:password@host:port/stream")
-                text: ""
-            }
+            RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 16
+                anchors.rightMargin: 16
+                spacing: 12
 
-            Button {
-                text: qsTr("Play")
-                onClicked: {
-                    streamController.play(urlField.text)
-                }
-            }
-
-            Button {
-                text: qsTr("Stop")
-                onClicked: {
-                    streamController.stop()
-                }
-            }
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-
-            Text {
-                id: statusText
-                Layout.fillWidth: true
-                color: "#CCCCCC"
-                text: qsTr("Status: ") + (streamController ? "" : "Not ready")
-
-                Connections {
-                    target: streamController
-                    function onStatusChanged() { 
-                        statusText.text = qsTr("Status: ") + streamController.status
-                         }                
-                }
-            }
-        }
-
-        Text {
-            id: errorText
-            Layout.fillWidth: true
-            color: "#FF6666"
-            visible: text.length > 0
-
-            Connections {
-                target: streamController
-                function onErrorOccurred(code, message) {
-                    if (message && message.length > 0) {
-                        errorText.text = qsTr("Error (%1): %2").arg(code).arg(message)
-                    } else {
-                        errorText.text = ""
+                TextField {
+                    id: urlField
+                    Layout.fillWidth: true
+                    placeholderText: "Enter RTSP URL..."
+                    selectByMouse: true
+                    background: Rectangle {
+                        color: "#333333"
+                        radius: 20
+                        border.color: urlField.activeFocus ? Material.accent : "transparent"
                     }
+                }
+
+                Button {
+                    text: qsTr("PLAY")
+                    highlighted: true
+                    onClicked: streamController.play(urlField.text)
+                }
+
+                Button {
+                    text: qsTr("STOP")
+                    flat: true
+                    onClicked: streamController.stop()
                 }
             }
         }
 
         Item {
-            id: videoContainer
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.margins: 20
 
             Rectangle {
                 anchors.fill: parent
-                color: "#101010"
-                radius: 4
+                color: "black"
+                radius: 12
+                clip: true
+                border.color: "#333333"
+                border.width: 1
 
                 VideoOutput {
                     id: videoOutput
                     anchors.fill: parent
-                    anchors.margins: 4
                     fillMode: VideoOutput.PreserveAspectFit
+                    
+                    // חשוב מאוד: קישור ה-Sink ל-C++ עם עליית הרכיב
                     Component.onCompleted: {
                         if (streamController && videoOutput.videoSink) {
                             streamController.setVideoSink(videoOutput.videoSink)
                         }
                     }
+
+                    Text {
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.margins: 16
+    
+    text: "● " + (streamController.status ? streamController.status : "READY")
+    
+    color: (streamController.status === "PLAYING") ? "#00ff00" : "#ffaa00"
+    font.pixelSize: 12
+    font.bold: true
+}
                 }
             }
         }
