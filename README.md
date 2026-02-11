@@ -68,10 +68,7 @@ It is designed to look and behave like a professional, real-world video monitori
    ```text
    C:\Qt\6.6.0\msvc2019_64
 
-
-
-🎞️ Installation & Setup
-GStreamer on Windows
+🎞️ Installing GStreamer on Windows
 Download: Obtain the 64-bit MSVC GStreamer SDK (Runtime + Development).
 
 Install: Use the default recommended path:
@@ -92,7 +89,7 @@ The main.cpp assumes the default path to set GST_PLUGIN_PATH and prepend the bin
 🛠️ Building the Project
 1️⃣ Clone the Repository
 Bash
-git clone <your-repo-url> LiveMatrix
+git clone LiveMatrix
 cd LiveMatrix
 2️⃣ Configure with CMake
 Run from a Developer PowerShell for VS 2022:
@@ -112,7 +109,7 @@ cmake --build build --config Release
 4️⃣ Optional: Build inside Qt Creator
 Open Qt Creator.
 
-File → Open File or Project…
+File → Open File or Project...
 
 Select the root CMakeLists.txt.
 
@@ -120,49 +117,22 @@ Choose an MSVC 64-bit kit with Qt 6.6+.
 
 Build and Run.
 
-▶️ Running LiveMatrix
-PowerShell
-cd build\LiveMatrix\Release
-.\LiveMatrix.exe
-User Interface Features:
-Window: Modern, dark-themed “LiveMatrix RTSP Professional”.
+⚙️ Requirements
+Qt 6.6.x (or newer):
 
-Controls: RTSP URL input, PLAY, and STOP buttons.
+Qt Quick
 
-Canvas: Central black video canvas for stream display.
+Qt Qml
 
-Status Indicators:
+Qt Multimedia (Ensure this is selected)
 
-● READY | ● Connecting… | ● PLAYING | ● Stopped | ● Error
+GStreamer 1.22+ (MSVC 64-bit):
 
-🧪 Testing & Verifying RTSP
-Check Source: Test your RTSP URL in VLC first to ensure the stream is active.
+Install both runtime and development packages.
 
-Play Stream: Paste the URL into LiveMatrix and click PLAY.
+pkg-config:
 
-Monitor: Observe status indicators; errors will appear in the console.
+Used by CMake to locate GStreamer (gstreamer-1.0, gstreamer-video-1.0, gstreamer-app-1.0).
 
-🗂️ Project Structure
-Plaintext
-LiveMatrix/
-├─ CMakeLists.txt
-├─ LiveMatrix/
-│  ├─ src/          # Source files
-│  ├─ include/      # Headers
-│  ├─ ui/           # UI design files
-│  └─ CMakeLists.txt
-└─ docs/            # Documentation
-Architected to mirror professional desktop standards with modular responsibility.
-
-💡 Tips for New Users
-Network: Prefer local or wired connections for stability.
-
-Consistency: Ensure 64-bit architecture across all dependencies.
-
-Debugging: Enable verbose logs:
-
-PowerShell
-$env:GST_DEBUG = "3"
-.\LiveMatrix.exe
 🏷️ Credits
 Developer: Elisheva Cohen
