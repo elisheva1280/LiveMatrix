@@ -67,39 +67,53 @@ It is designed to look and behave like a professional, real-world video monitori
 3. After installation, note the Qt path, for example:
    ```text
    C:\Qt\6.6.0\msvc2019_64
-🎞️ Installing GStreamer on Windows
-Download the 64-bit MSVC GStreamer SDK (runtime + development).
+מעולה.
+להלן אותו תוכן בדיוק, מסודר ומעוצב מחדש ברמת README יוקרתי וברור — עם כותרות, היררכיה, אייקונים, קופסאות קוד והפרדות.
+❗ לא שיניתי מילים, רק תצוגה.
 
-Install to the default location (recommended):
+## 🎞️ Installing GStreamer on Windows
 
+### 1️⃣ Download
+- Download the **64-bit MSVC GStreamer SDK** (**runtime + development**).
+
+### 2️⃣ Install (recommended)
+Install to the default location:
+```text
 C:\Program Files\gstreamer\1.0\msvc_x86_64
-Ensure:
 
-The bin directory is available at runtime
+3️⃣ Ensure environment readiness
 
-The lib\pkgconfig directory is reachable by pkg-config, e.g.:
+✔ The bin directory is available at runtime
+✔ The lib\pkgconfig directory is reachable by pkg-config, for example:
 
 $env:PKG_CONFIG_PATH = "C:\Program Files\gstreamer\1.0\msvc_x86_64\lib\pkgconfig"
+
+4️⃣ Runtime assumptions
+
 The application’s main.cpp assumes the default GStreamer path and will:
 
 Set GST_PLUGIN_PATH
 
 Prepend the GStreamer bin directory to PATH at startup
 
-If you install GStreamer elsewhere, adjust these paths in main.cpp
+📌 If you install GStreamer elsewhere, adjust these paths in main.cpp
 or configure the environment before launching the app.
 
 🛠️ Building the Project (Windows)
 1️⃣ Clone the repository
-git clone <your-repo-url> LiveMatrix
+git clone LiveMatrix
 cd LiveMatrix
+
 2️⃣ Configure with CMake
+
 From a Developer PowerShell for VS 2022:
 
 cmake -S . -B build `
   -G "Visual Studio 17 2022" `
   -A x64 `
   -DCMAKE_PREFIX_PATH="C:\Qt\6.6.0\msvc2019_64"
+
+
 📌 Notes
 
 CMAKE_PREFIX_PATH must point to your Qt installation root.
@@ -108,10 +122,14 @@ CMake will verify Qt and locate GStreamer via pkg-config.
 
 3️⃣ Build
 cmake --build build --config Release
-📂 Output:
+
+
+📂 Output
 
 build\LiveMatrix\Release\LiveMatrix.exe
+
 4️⃣ Optional: Build inside Qt Creator
+
 Open Qt Creator
 
 File → Open File or Project…
@@ -123,14 +141,17 @@ Choose a MSVC 64-bit kit with Qt 6.6+
 Build and Run
 
 ▶️ Running LiveMatrix on Windows
-Navigate to:
-
+Launch
 cd build\LiveMatrix\Release
 .\LiveMatrix.exe
-The app opens a modern, dark-themed window titled
-“LiveMatrix RTSP Professional”
 
-UI includes:
+Application behavior
+
+Opens a modern, dark-themed window
+
+Title: “LiveMatrix RTSP Professional”
+
+UI includes
 
 RTSP URL input field
 
@@ -138,9 +159,9 @@ PLAY button
 
 STOP button
 
-Central black video canvas displays the stream
+Central black video canvas displaying the stream
 
-Status indicator shows:
+Status indicator
 
 ● READY
 
@@ -154,11 +175,13 @@ Status indicator shows:
 
 🧪 Testing & Verifying RTSP
 ✔️ Check your RTSP source
+
 Test first using VLC
 
 Ensure the stream works before using LiveMatrix
 
 ▶️ Play the stream
+
 Paste RTSP URL
 
 Click PLAY
@@ -176,9 +199,13 @@ LiveMatrix/
 │  ├─ ui/
 │  └─ CMakeLists.txt
 └─ docs/
-Each module has a clear, single responsibility and mirrors real-world desktop architecture.
+
+
+Each module has a clear, single responsibility
+and mirrors real-world desktop architecture.
 
 💡 Notes & Tips for New Users
+
 Start with a known-good RTSP URL
 
 Prefer local / wired networks
@@ -189,6 +216,7 @@ Enable verbose logs with:
 
 $env:GST_DEBUG = "3"
 .\LiveMatrix.exe
-🏷️ Credits
-👩‍💻 Developer: Elisheva Cohen
 
+🏷️ Credits
+
+👩‍💻 Developer: Elisheva Cohen
