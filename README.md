@@ -81,62 +81,66 @@ Install to the default location:
 ```text
 C:\Program Files\gstreamer\1.0\msvc_x86_64
 3️⃣ Ensure environment readiness
+🎞️ LiveMatrix - Environment Readiness
+1️⃣ Installing GStreamer on Windows
+Download the 64-bit MSVC GStreamer SDK (runtime + development).
 
-🎞️ Installing GStreamer on Windows Download the 64-bit MSVC GStreamer SDK (runtime + development).
+Default Location (Recommended): C:\Program Files\gstreamer\1.0\msvc_x86_64
 
-Install to the default location (recommended):
+Ensure:
 
-C:\Program Files\gstreamer\1.0\msvc_x86_64 Ensure:
+The bin directory is available at runtime.
 
-The bin directory is available at runtime
+The lib\pkgconfig directory is reachable by pkg-config.
 
-The lib\pkgconfig directory is reachable by pkg-config, e.g.:
+Environment Configuration:
 
-$env:PKG_CONFIG_PATH = "C:\Program Files\gstreamer\1.0\msvc_x86_64\lib\pkgconfig" The application’s main.cpp assumes the default GStreamer path and will:
+PowerShell
+$env:PKG_CONFIG_PATH = "C:\Program Files\gstreamer\1.0\msvc_x86_64\lib\pkgconfig"
+Note: The application’s main.cpp assumes the default GStreamer path and will automatically set GST_PLUGIN_PATH and prepend the bin directory to PATH at startup. Adjust paths in main.cpp if installed elsewhere.
 
-Set GST_PLUGIN_PATH
+🛠️ Building the Project (Windows)
+1. Clone the Repository
+Bash
+git clone LiveMatrix
+cd LiveMatrix
+2. Configure with CMake
+From a Developer PowerShell for VS 2022:
 
-Prepend the GStreamer bin directory to PATH at startup
+PowerShell
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
+-DCMAKE_PREFIX_PATH="C:\Qt\6.6.0\msvc2019_64"
+📌 Note: CMAKE_PREFIX_PATH must point to your Qt installation root.
 
-If you install GStreamer elsewhere, adjust these paths in main.cpp or configure the environment before launching the app.
+3. Build
+PowerShell
+cmake --build build --config Release
+📂 Output: build\LiveMatrix\Release\LiveMatrix.exe
 
-🛠️ Building the Project (Windows) 1️⃣ Clone the repository git clone LiveMatrix cd LiveMatrix 2️⃣ Configure with CMake From a Developer PowerShell for VS 2022:
-
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64 ` -DCMAKE_PREFIX_PATH="C:\Qt\6.6.0\msvc2019_64" 📌 Notes
-
-CMAKE_PREFIX_PATH must point to your Qt installation root.
-
-CMake will verify Qt and locate GStreamer via pkg-config.
-
-3️⃣ Build cmake --build build --config Release 📂 Output:
-
-build\LiveMatrix\Release\LiveMatrix.exe 4️⃣ Optional: Build inside Qt Creator Open Qt Creator
+4. Optional: Build inside Qt Creator
+Open Qt Creator.
 
 File → Open File or Project…
 
-Select the root CMakeLists.txt
+Select the root CMakeLists.txt.
 
-Choose a MSVC 64-bit kit with Qt 6.6+
+Choose a MSVC 64-bit kit with Qt 6.6+.
 
-Build and Run
+▶️ Running LiveMatrix on Windows
+Navigate and Run:
 
-▶️ Running LiveMatrix on Windows Navigate to:
+PowerShell
+cd build\LiveMatrix\Release
+.\LiveMatrix.exe
+UI Features:
 
-cd build\LiveMatrix\Release .\LiveMatrix.exe The app opens a modern, dark-themed window titled “LiveMatrix RTSP Professional”
+Modern, Dark-themed Window: Titled “LiveMatrix RTSP Professional”.
 
-UI includes:
+Controls: RTSP URL input field, PLAY button, STOP button.
 
-RTSP URL input field
+Display: Central black video canvas.
 
-PLAY button
-
-STOP button
-
-Central black video canvas displays the stream
-
-Status indicator shows:
-
-● READY
+Status Indicators: * ● READY
 
 ● Connecting…
 
@@ -146,26 +150,36 @@ Status indicator shows:
 
 ● Error
 
-🧪 Testing & Verifying RTSP ✔️ Check your RTSP source Test first using VLC
+🧪 Testing & Verifying RTSP
+✔️ Check your RTSP source: Test first using VLC to ensure the stream works.
 
-Ensure the stream works before using LiveMatrix
+▶️ Play the stream: Paste RTSP URL → Click PLAY.
 
-▶️ Play the stream Paste RTSP URL
+Errors: Appear clearly in the console.
 
-Click PLAY
+🗂️ Project Structure
+Plaintext
+LiveMatrix/
+├─ CMakeLists.txt
+├─ LiveMatrix/
+│  ├─ src/
+│  ├─ include/
+│  ├─ ui/
+│  └─ CMakeLists.txt
+└─ docs/
+Each module has a clear, single responsibility and mirrors real-world desktop architecture.
 
-Observe status and video output
+💡 Notes & Tips for New Users
+Start with a known-good RTSP URL.
 
-Errors appear clearly in the console
+Prefer local / wired networks.
 
-🗂️ Project Structure LiveMatrix/ ├─ CMakeLists.txt ├─ LiveMatrix/ │ ├─ src/ │ ├─ include/ │ ├─ ui/ │ └─ CMakeLists.txt └─ docs/ Each module has a clear, single responsibility and mirrors real-world desktop architecture.
+Ensure 64-bit consistency.
 
-💡 Notes & Tips for New Users Start with a known-good RTSP URL
+Enable Verbose Logs:
 
-Prefer local / wired networks
-
-Ensure 64-bit consistency
-
-Enable verbose logs with:
-
-$env:GST_DEBUG = "3" .\LiveMatrix.exe 🏷️ Credits 👩‍💻 Developer: Elisheva Cohen
+PowerShell
+$env:GST_DEBUG = "3"
+.\LiveMatrix.exe
+🏷️ Credits
+👩‍💻 Developer: Elisheva Cohen
