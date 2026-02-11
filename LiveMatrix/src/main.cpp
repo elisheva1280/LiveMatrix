@@ -28,8 +28,14 @@ static void log(const char* msg)
 static void attachConsoleIfNeeded()
 {
 #ifdef _WIN32
-
+    // 1. הגדרת נתיב הפלאגינים
     _putenv_s("GST_PLUGIN_PATH", "C:\\Program Files\\gstreamer\\1.0\\msvc_x86_64\\lib\\gstreamer-1.0");
+
+    // 2. הוספת תיקיית ה-bin של GStreamer ל-PATH כדי שהפלאגינים ימצאו DLLs חסרים
+    std::string currentPath = getenv("PATH");
+    std::string gstBin = "C:\\Program Files\\gstreamer\\1.0\\msvc_x86_64\\bin";
+    std::string newPath = gstBin + ";" + currentPath;
+    _putenv_s("PATH", newPath.c_str());
 
     if (AttachConsole(ATTACH_PARENT_PROCESS))
     {

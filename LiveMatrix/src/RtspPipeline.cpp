@@ -67,7 +67,7 @@ bool RtspPipeline::start(const QString& url)
     g_object_set(src,
                  "location", url.toUtf8().constData(),
                  "latency", 200,
-                 "protocols", 4, // GST_RTSP_LOWER_TRANS_TCP
+                 "protocols", 7, // GST_RTSP_LOWER_TRANS_TCP
                  nullptr);
 
     g_object_set(appsink,
