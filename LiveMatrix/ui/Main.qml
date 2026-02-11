@@ -3,6 +3,8 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Window 2.15
 import QtMultimedia 6.6
+import QtQuick.Controls.Material 2.15
+
 
 Window {
     id: root
@@ -10,6 +12,9 @@ Window {
     height: 540
     visible: true
     title: qsTr("RTSP Viewer (MVP)")
+
+    Material.theme: Material.Dark
+    Material.accent: Material.Teal
 
     color: "#202020"
 
@@ -55,9 +60,9 @@ Window {
 
                 Connections {
                     target: streamController
-                    onStatusChanged: {
-                        statusText.text = qsTr("Status: ") + status
-                    }
+                    function onStatusChanged() { 
+                        statusText.text = qsTr("Status: ") + streamController.status
+                         }                
                 }
             }
         }
@@ -70,7 +75,7 @@ Window {
 
             Connections {
                 target: streamController
-                onErrorOccurred: function(code, message) {
+                function onErrorOccurred(code, message) {
                     if (message && message.length > 0) {
                         errorText.text = qsTr("Error (%1): %2").arg(code).arg(message)
                     } else {
